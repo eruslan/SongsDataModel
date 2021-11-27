@@ -1,13 +1,13 @@
-# SongsDataModel
-This project is a homework for Udacity Data Engineering Nanodegree Program. Data modelling with Postgres.
+# Project: Data modelling with postgres
+This project is a homework for Udacity Data Engineering Nanodegree Program. 
 
 Folowing project files were provided as an input:
 
-- \data\songs_data\      Directory contains .json files with songs data. No changes applied
+- __\data\songs_data\__      Directory contains .json files with songs data. No changes applied
 
-- \data\log_data\        Directory contains .json files with user activity logs data. No changes applied
+- __\data\log_data\__        Directory contains .json files with user activity logs data. No changes applied
 
-- create_tables.py       Run this script first to create local database and tabels. No changes applied. Following tables are created:
+- __create_tables.py__       Run this script first to create local database and tabels. No changes applied. Following tables are created:
           
           - songplays  - user listening for the song session
           - songs - songs dictionary
@@ -15,13 +15,12 @@ Folowing project files were provided as an input:
           - useres - users dictionary
           - time - can be used to agregate songplays data by year,month,day e.t.c. 
 
-- sql_queries.py         This scripts determis the set of SQL statements that are used in create_tables.py and etl.py. 
-                       There are statements to create, drop, insert tables and select statement to read songs data while processing user activity log. That file was modified. 
-- test.ipynb can be used to observe data in created tables. No changes applied.
-- etl.ipynb can be used to debug etl.py code during development. Was modified by fullfilment of the empty parts.                       
-- etl.py                   Run this script to perform the import. There is no garantee that dublicates are not created when script is ran multiple times. Please always run  create_tables.py before  etl.py to avoid dublicates. If the song that user is lisstening to is not found in songs, then None will be added as artist and song. Actually only one song record is found at data provided.  etl.py file was modified. 
+- __sql_queries.py__         This scripts determis the set of SQL statements that are used in __create_tables.py__ and __etl.py__. There are statements to create, drop, insert tables and select statement to read songs data while processing user activity log. That file was modified. 
+- __test.ipynb__ can be used to observe data in created tables. No changes applied.
+- __etl.ipynb__ can be used to debug __etl.py__ code during development. Was modified by fullfilment of the empty parts.                       
+- __etl.py__   Run this script to perform the import. There is no garantee that dublicates are not created when script is ran multiple times. Please always run  __create_tables.py__ before  __etl.py__ to avoid dublicates. If the song that user is lisstening to is not found in songs, then None will be added as artist and song. Actually only one song record is found at data provided.  __etl.py__ file was modified. 
 
-Here is the maping table from original JSON Files to resulting tables that is done by etl.py
+Here is the maping table from original JSON Files to resulting tables that is done by __etl.py__
 
 | Origin     | OriginField : SampleData                                                                                                                                                          | Destanation<br>table.column               | Comment                                                                                                                                |
 | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
