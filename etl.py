@@ -1,7 +1,9 @@
 import os
 import glob
 import psycopg2
+import psycopg2.extras
 import pandas as pd
+import time
 from sql_queries import *
 
 
@@ -75,11 +77,8 @@ def process_log_file(cur, filepath):
                            t.dt.year,
                            t.dt.weekday],
                           axis=1)
-    column_labels = ["ts", "hour", "day", "week", "month", "year", "weekday"]
-    time_df = time_data.set_axis(column_labels, axis=1, inplace=False)
-
-    for i, row in time_df.iterrows():
-        cur.execute(time_table_insert, list(row))
+    psycopg2.extras.execute_batch(
+        cur, time_table_insert, time_data.values.tolist())
 
     # load user table
     user_df = df.filter(['userId',
@@ -90,10 +89,11 @@ def process_log_file(cur, filepath):
                         )
 
     # insert user records
-    for i, row in user_df.iterrows():
-        cur.execute(user_table_insert, row)
+    psycopg2.extras.execute_batch(
+        cur, user_table_insert, user_df.values.tolist())
 
     # insert songplay records
+    songplay_data = []
     for index, row in df.iterrows():
 
         # get songid and artistid from song and artist tables
@@ -103,20 +103,18 @@ def process_log_file(cur, filepath):
         if results:
             songid, artistid = results
         else:
-            print("No entry in song_log for log_data {} {} {}".format(
-                row.song, row.artist, row.length))
             songid, artistid = None, None
 
         # insert songplay record
-        songplay_data = row.userId, \
-            songid, \
-            artistid, \
-            row.sessionId, \
-            row.ts, \
-            row.level, \
-            row.location, \
-            row.userAgent
-        cur.execute(songplay_table_insert, songplay_data)
+        songplay_data.append((row.userId,
+                              songid,
+                              artistid,
+                              row.sessionId,
+                              row.ts,
+                              row.level,
+                              row.location,
+                              row.userAgent))
+    psycopg2.extras.execute_batch(cur, songplay_table_insert, songplay_data)
 
 
 def process_data(cur, conn, filepath, func):
@@ -160,11 +158,19 @@ def main():
     conn = psycopg2.connect(
         "host=127.0.0.1 dbname=sparkifydb user=student password=student")
     cur = conn.cursor()
-
+    # Time profiling songs processing
+    start_song = time.perf_counter()
     process_data(cur, conn, filepath='data/song_data', func=process_song_file)
-    process_data(cur, conn, filepath='data/log_data', func=process_log_file)
+    elapsed_song = time.perf_counter() - start_song
 
+    # Time profiling logs processing
+    start_log = time.perf_counter()
+    process_data(cur, conn, filepath='data/log_data', func=process_log_file)
+    elapsed_log = time.perf_counter() - start_log
     conn.close()
+    print('=========================================')
+    print(f'Songs import durtion {elapsed_song:0.4}')
+    print(f'Logs import duration {elapsed_log:0.4}')
 
 
 if __name__ == "__main__":

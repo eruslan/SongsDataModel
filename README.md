@@ -25,7 +25,8 @@ Database structure is defined at **sql_queries.py** by CREATE TABLE statements. 
 
 ### 2.3 ER model
 
-![alt text](https://github.com/eruslan/SongsDataModel/blob/master/sparkifydb_erd.png)
+![](sparkifydb_erd.png)
+[Image](https://github.com/eruslan/SongsDataModel/blob/master/sparkifydb_erd.png)
 
 ## 3. ETL Process
 The ETL process is performed by the **etl.py** python script.
